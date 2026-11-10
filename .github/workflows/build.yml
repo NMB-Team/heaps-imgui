@@ -37,7 +37,7 @@ jobs:
       - name: Build native extension
         run: |
           cmake -S extension -B extension/build -G Ninja -DCMAKE_BUILD_TYPE=Release
-          cmake --build extension/build --target hlimgui.hdll
+          cmake --build extension/build --target heaps-imgui.hdll
 
       - name: Verify HashLink extension loading
         run: |
@@ -47,16 +47,16 @@ jobs:
 
       - name: Package release files
         run: |
-          mkdir -p dist/hlimgui-linux
-          cp extension/build/hlimgui.hdll dist/hlimgui-linux/
-          test -f dist/hlimgui-linux/hlimgui.hdll
-          tar -czf hlimgui-linux.tar.gz -C dist/hlimgui-linux .
+          mkdir -p dist/heaps-imgui-linux
+          cp extension/build/imgui.hdll dist/heaps-imgui-linux/
+          test -f dist/heaps-imgui-linux/imgui.hdll
+          tar -czf heaps-imgui-linux.tar.gz -C dist/heaps-imgui-linux .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: hlimgui-linux
-          path: hlimgui-linux.tar.gz
+          name: heaps-imgui-linux
+          path: heaps-imgui-linux.tar.gz
           compression-level: 0
 
   windows:
@@ -108,45 +108,45 @@ jobs:
 
       - name: Package release files
         run: |
-          $packageDir = Join-Path $env:GITHUB_WORKSPACE 'dist\hlimgui'
+          $packageDir = Join-Path $env:GITHUB_WORKSPACE 'dist\heaps-imgui'
           if (Test-Path -LiteralPath 'dist') {
             Remove-Item -LiteralPath 'dist' -Recurse -Force
           }
           New-Item -ItemType Directory -Force $packageDir | Out-Null
 
-          $hdll = Get-ChildItem -LiteralPath $env:GITHUB_WORKSPACE -Filter 'hlimgui.hdll' -File -Recurse | Select-Object -First 1
-          $lib = Get-ChildItem -LiteralPath (Join-Path $env:GITHUB_WORKSPACE 'extension\build') -Filter 'hlimgui.lib' -File -Recurse | Select-Object -First 1
+          $hdll = Get-ChildItem -LiteralPath $env:GITHUB_WORKSPACE -Filter 'imgui.hdll' -File -Recurse | Select-Object -First 1
+          $lib = Get-ChildItem -LiteralPath (Join-Path $env:GITHUB_WORKSPACE 'extension\build') -Filter 'heaps-imgui.lib' -File -Recurse | Select-Object -First 1
 
           if (-not $hdll) {
-            throw 'Missing built hlimgui.hdll.'
+            throw 'Missing built imgui.hdll.'
           }
           if (-not $lib) {
-            throw 'Missing built hlimgui.lib.'
+            throw 'Missing built heaps-imgui.lib.'
           }
 
           Copy-Item -LiteralPath $hdll.FullName -Destination $packageDir
           Copy-Item -LiteralPath $lib.FullName -Destination $packageDir
 
-          if (-not (Test-Path -LiteralPath (Join-Path $packageDir 'hlimgui.hdll'))) {
-            throw 'Missing packaged hlimgui.hdll.'
+          if (-not (Test-Path -LiteralPath (Join-Path $packageDir 'imgui.hdll'))) {
+            throw 'Missing packaged imgui.hdll.'
           }
-          if (-not (Test-Path -LiteralPath (Join-Path $packageDir 'hlimgui.lib'))) {
-            throw 'Missing packaged hlimgui.lib.'
+          if (-not (Test-Path -LiteralPath (Join-Path $packageDir 'heaps-imgui.lib'))) {
+            throw 'Missing packaged heaps-imgui.lib.'
           }
 
       - name: Create release zip
         shell: pwsh
         run: |
-          if (Test-Path -LiteralPath 'hlimgui-windows.zip') {
-            Remove-Item -LiteralPath 'hlimgui-windows.zip' -Force
+          if (Test-Path -LiteralPath 'heaps-imgui-windows.zip') {
+            Remove-Item -LiteralPath 'heaps-imgui-windows.zip' -Force
           }
-          Compress-Archive -Path 'dist\hlimgui\*' -DestinationPath 'hlimgui-windows.zip'
+          Compress-Archive -Path 'dist\heaps-imgui\*' -DestinationPath 'heaps-imgui-windows.zip'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: hlimgui-windows
-          path: dist/hlimgui
+          name: heaps-imgui-windows
+          path: dist/heaps-imgui
 
       - name: Update nightly release
         if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
@@ -155,9 +155,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $tag = 'nightly'
-          $asset = 'hlimgui-windows.zip'
+          $asset = 'heaps-imgui-windows.zip'
           $notes = @'
-          Automated Windows and Linux builds of `hlimgui` using NMB HashLink.
+          Automated Windows and Linux builds of `heaps-imgui` using NMB HashLink.
 
           Download the archive for your platform and extract it where you want to keep the library files.
           '@
@@ -207,10 +207,10 @@ jobs:
       - name: Download Linux artifact
         uses: actions/download-artifact@v8
         with:
-          name: hlimgui-linux
+          name: heaps-imgui-linux
           path: .
 
       - name: Update nightly release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload nightly hlimgui-linux.tar.gz --repo "$GITHUB_REPOSITORY" --clobber
+        run: gh release upload nightly heaps-imgui-linux.tar.gz --repo "$GITHUB_REPOSITORY" --clobber

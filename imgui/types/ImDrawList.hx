@@ -8,7 +8,7 @@ import imgui.types.Pointers;
 /**
 	Low-level drawing API for submitting shapes, text, and images.
 **/
-@:hlNative("hlimgui", "drawlist_")
+@:hlNative("imgui", "drawlist_")
 abstract ImDrawList(ImDrawListPtr) from ImDrawListPtr to ImDrawListPtr {
 	/**
 		Creates a new `ImDrawList` instance.
@@ -310,7 +310,7 @@ abstract ImDrawList(ImDrawListPtr) from ImDrawListPtr to ImDrawListPtr {
 /**
 	Splits a draw list into channels that can be reordered and merged.
 **/
-@:hlNative("hlimgui", "drawlistsplitter_") @:forward
+@:hlNative("imgui", "drawlistsplitter_") @:forward
 abstract ImDrawListSplitter(ImDrawListSplitterStruct) from ImDrawListSplitterStruct to ImDrawListSplitterStruct {
 	static function init():ImDrawListSplitterStruct {
 		return null;

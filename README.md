@@ -1,202 +1,120 @@
-# Heaps/HashLink native binding for [Dear ImGui](https://github.com/ocornut/imgui)
+# heaps-imgui
 
-Uses Dear ImGui [v1.93.0-docking](https://github.com/ocornut/imgui/releases/tag/v1.93.0-docking).
+Build debug panels, editors, and in-game tools with Dear ImGui in Haxe. **heaps-imgui** binds [Dear ImGui v1.93.0-docking](https://github.com/ocornut/imgui/releases/tag/v1.93.0-docking) to HashLink and provides a renderer and input integration for Heaps.
 
-## Build & Install
-First, make sure that HashLink, CMake and a C/C++ compiler are installed on your system.
+[Quick start](#quick-start) · [Build from source](#build-from-source) · [Heaps integration](#heaps-integration) · [Troubleshooting](#troubleshooting)
 
-### Building extension automatically
-1. Install the library to haxelib.
-  - With haxelib directly: `haxelib git hlimgui https://github.com/nspitko/hlimgui.git`
-  - By cloning it to another directory and using `haxelib dev hlimgui path/to/hlimgui`
-  - With lix: See https://github.com/lix-pm/lix.client#local-development
-  - With [gsm](https://github.com/tobil4sk/haxe-git-submodule-manager): `haxelib --global run gsm add hlimgui https://github.com/nspitko/hlimgui`
-2. Make sure `hl` (`hl.exe` on Windows) is in `PATH`, or set `HASHLINK`, `HASHLINK_BIN`, `HASHLINK_PATH`, or `HASHLINKPATH` to its installation directory.
-3. Run `haxelib run hlimgui build -u` to update submodules (`-u` flag) and compile the .hdll file.
-4. Add `-lib hlimgui` to your `build.hxml`
-5. When shipping, make sure to copy the `hlimgui.hdll` from hashlink directory or run `haxelib run hlimgui install path/to/output/dir`
+## Quick start
 
-Note: by default `build` command compiles in debug mode, use `-r` flag to compile in release mode.
+You’ll need Haxe, HashLink, and a working Heaps project with a HashLink backend such as hlsdl or Limen.
 
-### Building extension manually
-This version of hlimgui uses submodules. Get them prepared like this:
+1. Clone and register the Haxe library.
 
-```
-git submodule init
-git submodule update
-```
+   ```sh
+   git clone https://github.com/NMB-Team/heaps-imgui.git
+   haxelib dev heaps-imgui heaps-imgui
+   ```
 
-Then the native extension needs to be built with these commands:
+2. Download the Windows or Linux archive from [Releases](../../releases), or [build the native module](#build-from-source). Use an archive that matches your platform, CPU architecture, and HashLink runtime. Copy **`imgui.hdll`** into the directory you launch the app from, or put it in your HashLink native library search path.
+3. Add the library to your project’s HXML. Keep the Heaps and backend settings you already use.
 
-```
-cd extension
-mkdir build
-cd build
+   ```hxml
+   -lib heaps-imgui
+   ```
 
-cmake ..
-cmake --build . --config Release
-```
-It builds a target `hdll` file, which you can copy to the root of the project.
+### Your first window
 
-Another method is to build it inside Visual Studio Code with `CMake Tools` extension installed, so you don't have to deal with the command line.
-
-To add this library to your project, there are a few steps.
-1) Copy the previously compiled `hlimgui.hdll` file to your project folder.
-2) Add the library to your project as a haxelib.
-   - With haxelib: `haxelib dev hlimgui path/to/hlimgui`
-   - With lix: See https://github.com/lix-pm/lix.client#local-development
-   - With [gsm](https://github.com/tobil4sk/haxe-git-submodule-manager): `haxelib --global run gsm add hlimgui https://github.com/nspitko/hlimgui`
-3) Add `-lib hlimgui` to your `build.hxml`
-
-Alternatively, you can just copy the files directly into your project instead, though this has some drawbacks and is generally not recommended. At the time of writing it is known to negatively impact the language server and prevent symbol renaming, among other things. If you still want to take this path, you'll need to copy these files:
-- `imgui/ImGuiDrawable.hx`: this class derives from the standard Heaps `Drawable` class and contains/displays all ImGui widgets.
-- `imgui/ImGui.hx`: interface to the native extension.
-- `imgui/ImGuiMacro.hx`: Useful helper macros for wrapping `hl.Ref`.
-- `imgui/NodeEditor.hx`: Wrapper for the imgui-node-editor extension, if used.
-- `imgui/FieldRef.hx`: The macro-helper that emulates missing `$fieldref` opcode for HL that is required for usage of this library.
-
-See `Main.hx` to see how to implement this library.
-
-## Supported ImGui features
-Most of the ImGui functionalities are supported and bound. Look at [https://github.com/ocornut/imgui](https://github.com/ocornut/imgui) to get documentation on exposed functions AND how ImGui works.
-
-Here is a list of unsupported features and changes:
-
-- ImGui has several functions which take a variable number of parameters in order to format strings. This feature isn't supported in Haxe, so all string formatting must be done in Haxe before passing it to ImGui.
-
-- The function `setIniFilename` doesn't exist in ImGui, it has been added to modify the filename of the default ini file saved by ImGui (pass null to turn off this feature).
-
-## Viewports
-ImGui viewports are implemented with a mostly identical API, with a few minor exceptions. The default heaps base includes built-in support when using `-D multidriver`, else it can be used as a reference implementation.
-
-#### Wayland specific quirks
-Viewports do not (and may never) work in wayland due to it's lack of support for setting window size/position. You may be able to work around this by setting `sdl.Sdl.setHint("SDL_VIDEO_DRIVER", "x11");`, in environments that support XWayland. There are still bugs here but it should be *usable*.
-
-## References
-Input functions often take a `Ref<T>` / `imgui.FieldRef<T>` argument.
-Those are equivalent to `hl.Ref` however offer an extra feature of referencing a class instance or static field, not only local variables.
+Use `ImGuiApp` in place of `hxd.App` to have Heaps handle ImGui input, frame setup, and rendering. Declare widgets each frame in `update()` and store application state on the app.
 
 ```haxe
-var myString = "Hello!", edited: Boolean;
+import imgui.ImGui;
+import imgui.ImGuiApp;
 
-// myString is automatically converted into a ref, imgui will update it when the user changes the value.
-edited = ImGui.inputText('Text input', myString );
+class Main extends ImGuiApp {
+    var clicks = 0;
+
+    static function main() {
+        new Main();
+    }
+
+    override function update(dt:Float) {
+        super.update(dt);
+
+        if (ImGui.begin("Hello, ImGui")) {
+            if (ImGui.button("Click me"))
+                clicks++;
+
+            ImGui.text('Clicks: ${clicks}');
+        }
+
+        ImGui.end();
+    }
+}
 ```
 
-However the limitation of `Ref` is that it does not work on properties (`get_x` / `set_y`), in which case you will have to manually load said values into local variables or use the wrapper function:
+Call `ImGui.end()` after every `ImGui.begin()`, even when `begin()` returns `false`. Use `ImGui.showDemoWindow()` inside `update()` to explore widgets and settings.
 
-```haxe
-import imgui.ImGuiMacro.*; // Import the `wref` / `wrefv` and `wrefc` macro functions into global scope.
-// In order to denote which values should be converted into a reference,
-// either use `$(path.to.field)` notation or use `_` and insert the value after the initial call.
-// Names are shorthands to:
-// wref - With Reference
-// wrefv - With Reference (Void call)
-// wrefc - With Reference (Conditional assign)
-
-var myString = "Hello!", edited: Boolean;
-
-// Will assign myString regardless of inputText return value.
-// `wref` will assign referenced values back regardless of the returned value.
-// Wrapper return value is equivalent to wrapped function return value. Incompatible with `:Void` methods.
-edited = wref(ImGui.inputText('Text input', $(myString))); // With `$(value)` notation
-edited = wref(ImGui.inputText('Text input', _), myString); // With `_` notation
-
-// same as `wref` - `wrefv` will assign value back regardless, but compatible with `:Void` methods.
-static var show: Boolean = true;
-wrefv(ImGui.showDemoWindow($(edited)));
-// Will result in an error! `wrefv` does not return a value.
-// edited = wrefv(ImGui.inputText('Text input', $(myString)));
-
-// Compared to `wref` - `wrefc` only assigns back the value if wrapped method returns true.
-// Note that it works only with methods that return a boolean.
-// Useful when property does some extra logic when it's changes and you don't want it to trigger every frame.
-edited = wrefc(ImGui.inputText('Text input', $(myString)));
-```
-
-## Heaps integration
-This library comes with a built-in Heaps support with the following features:
-* `imgui.ImGuiApp` is a quick-start `hxd.App` version that overlays ImGui elements as a separate scene.
-* `imgui.ImGuiDrawable` is a primary renderer for ImGui content and can be used to set up your own ImGui integration if `ImGuiApp` is not viable.
-* `imgui.ImTextureID` is mapped to `h3d.mat.Texture`.
-* A number of methods that take `h2d.Tile` instead of `ImTextureID` for easier image rendering.
-
-### Notifications
-
-The default notification center is rendered automatically by `ImGui.render()`:
-
-```haxe
-ImGui.notifications.success("Project saved", {
-	callbacks: {
-		start: playNotificationSound,
-		finish: onNotificationFinished
-	}
-});
-ImGui.notifications.error("Export failed", {duration: 8});
-ImGui.notifications.warning("Connection lost", {
-	key: "connection",
-	action: {
-		label: "Retry",
-		callback: reconnect
-	}
-});
-```
-
-Supplying the same `key` replaces and restarts a notification instead of adding a duplicate. The returned notification can also be updated, restarted, or dismissed. Placement, queue limits, animation timings, layout, and colors are available through `ImGui.notifications.style`.
-
-Enter and exit easing accept any normalized `Float -> Float` callback. Leaving them null keeps linear animation:
-
-```haxe
-ImGui.notifications.style.enterEase = t -> 1 - Math.pow(1 - t, 3);
-ImGui.notifications.style.exitEase = t -> t * t;
-ImGui.notifications.style.reflowEase = t -> 1 - Math.pow(1 - t, 3);
-```
-
-Mulit-window viewport support can be added with `-D multidriver`
-
-### Fonts
-
-Load the default font directly from a typed Heaps resource:
-
-```haxe
-ImGui.fonts.setDefault(hxd.Res.fonts.inter, 18);
-```
-
-The same API works with packed resources because it reads through the Heaps virtual resource filesystem:
-
-```haxe
-hxd.Res.initPak();
-ImGui.fonts.setDefault(hxd.Res.fonts.inter, 18);
-```
-
-Additional fonts can be scoped to a block:
-
-```haxe
-final mono = ImGui.fonts.add(hxd.Res.fonts.jetbrainsMono);
-
-ImGui.fonts.with(mono, 14, () -> {
-	ImGui.text("Hello");
-});
-```
-
-Raw font bytes are also supported and retained for the lifetime of the font:
-
-```haxe
-ImGui.fonts.setDefaultBytes(bytes, 18);
-```
-
-The Heaps renderer handles Dear ImGui font texture creation, incremental updates, and destruction. Normal Heaps applications should not manually call `getTexDataAsRGBA32()`, `Texture.fromPixels()`, or `setTexId()` for fonts. Those low-level APIs remain available for custom renderers.
-
-The font runtime example covers resource loading, raw bytes, replacement, removal, scaling, garbage collection, and late loading. Add `-D font_api_pak` to compile the same test against a temporary `.pak`:
+To run this repository’s [sample](src/Main.hx), install Heaps and hlsdl, place `imgui.hdll` in the checkout root, and run:
 
 ```sh
-haxe tests/font-api.hxml
-hl extension/build/font-api-test.hl
+haxe compile.hxml
+hl imgui.hl
 ```
 
-## Bugs
-If you find bugs, please report them on the GitHub project page. Most of the bound functions have been tested, but as it's a new library some bugs might remain.
+## Build from source
 
-## Thanks
-* haddock7: I would like to thanks [Aidan63](https://github.com/Aidan63/linc_imgui) for their Haxe/cpp binding. I have borrowed all the structure declaration code which remains the same between the two bindings.
-* This is a fork of [haddock7's](https://github.com/haddock7/hlimgui) imgui port for HashLink with advanced usage of HL/Haxe specifics accounted for, thanks to him for initial port of the library.
+Install Git, CMake, a C/C++ toolchain with C++23 support, and HashLink with its development headers and library. Run these commands from the checkout root:
+
+```sh
+git submodule update --init --recursive
+cmake -S extension -B extension/build -DCMAKE_BUILD_TYPE=Release
+cmake --build extension/build --config Release
+```
+
+CMake copies the resulting `imgui.hdll` to the checkout root. The binary is also in the build directory, under `Release/` with multi-configuration generators such as Visual Studio.
+
+If CMake cannot find HashLink, add `-DHASHLINK_ROOT=/path/to/hashlink` to the configure command. Point it at the installation containing `hl.h` and the HashLink library.
+
+| CMake option | Default | Purpose |
+| --- | --- | --- |
+| `NODE_EDITOR` | `ON` | Build the node editor used by `imgui.NodeEditor` |
+| `MARKDOWN` | `ON` | Build Markdown rendering used by `imgui.Markdown` |
+
+Set an option at configure time, for example `-DNODE_EDITOR=OFF`. Enable each native add-on your Haxe code calls. When distributing your app, bundle the matching `imgui.hdll` and your Heaps backend’s native dependencies.
+
+## Heaps integration
+
+- **Existing render loop** — Use [`ImGuiDrawable`](imgui/ImGuiDrawable.hx) and manage frame timing yourself. The [manual integration example](src/Main.hx) shows the frame and input setup.
+- **Textures and tiles** — Pass an `h3d.mat.Texture` to `ImGui.image()` or an `h2d.Tile` to `ImGui.imageTile()`.
+- **Fonts** — After initializing Heaps resources, load a typed font resource with `ImGui.fonts.setDefault(hxd.Res.fonts.inter, 18)`, assuming your project contains that font. The API works with packed resources and also accepts raw bytes through `setDefaultBytes()`. The Heaps renderer manages the font textures.
+- **Notifications** — Call `ImGui.notifications.success("Project saved")` to show a toast. Use the same notification `key` to replace an existing toast, or customize placement and timing through `ImGui.notifications.style`.
+- **Platform viewports** — Build with `-D multidriver` to enable separate platform windows in `ImGuiApp` on compatible Heaps backends. Native Wayland can limit window positioning. If detached windows fail on Linux, try an X11 session or XWayland with an SDL backend.
+
+### Editable values
+
+Widgets like `inputText()` take a reference so they can update your value. Pass a local variable or a writable field.
+
+```haxe
+ImGui.inputText("Name", name);
+```
+
+For a getter/setter property, copy its value into a local and write it back when the widget reports a change. The [reference macros](imgui/ImGuiMacro.hx) provide `wref`, `wrefv`, and `wrefc` for this pattern.
+
+Format strings in Haxe before passing them to widgets. For example, use `ImGui.text('FPS: $fps')` for a value you already computed.
+
+## Troubleshooting
+
+| Symptom | What to check |
+| --- | --- |
+| Haxe cannot find `heaps-imgui` | Run `haxelib path heaps-imgui` and confirm it points to the intended checkout. |
+| HashLink cannot load `imgui.hdll` | Check the app’s working directory, the native library search path, and whether the HDLL matches the runtime and architecture. |
+| HashLink reports a missing native function | Use the Haxe bindings and `imgui.hdll` from the same revision. Check whether the function needs an add-on enabled in CMake. |
+| A build still refers to `hlimgui` | Update the dependency to `-lib heaps-imgui` and replace explicit `-D hlimgui` flags with `-D heaps-imgui`. The old define is accepted with a deprecation warning when the library is loaded. In Haxe code, use `#if heaps_imgui`. |
+
+## Further reading
+
+- [Dear ImGui FAQ](https://github.com/ocornut/imgui/blob/docking/docs/FAQ.md) for widget behavior, IDs, and input handling.
+
+## Credits and license
+
+Based on [haddock7’s HashLink binding](https://github.com/haddock7/hlimgui) which drew on [Aidan63’s Haxe/C++ bindings](https://github.com/Aidan63/linc_imgui). See the [binding license](LICENSE) and the [Dear ImGui license](LICENSE_IMGUI).

@@ -8,7 +8,7 @@ import h2d.Tile;
 
 import h3d.mat.Texture;
 
-#if !hlimgui_heaps_old_buffer_alloc
+#if !heaps_imgui_heaps_old_buffer_alloc
 import hxd.BufferFormat.InputFormat;
 import hxd.BufferFormat.Precision;
 #end
@@ -33,7 +33,7 @@ private typedef ManagedImGuiTexture = {
 	var pixels:hxd.Pixels;
 }
 
-#if !hlimgui_heaps_old_buffer_alloc
+#if !heaps_imgui_heaps_old_buffer_alloc
 private class ImGuiPositionShader extends hxsl.Shader {
 	static var SRC = {
 		@const var enabled:Bool;
@@ -51,7 +51,7 @@ private class ImGuiPositionShader extends hxsl.Shader {
 	Owns reusable Heaps buffers and textures used by the Dear ImGui renderer.
 **/
 class ImGuiDrawableBuffers {
-	#if !hlimgui_heaps_old_buffer_alloc
+	#if !heaps_imgui_heaps_old_buffer_alloc
 	static final vertexFormat = hxd.BufferFormat.make([
 		{name: "position", type: InputFormat.DVec2},
 		{name: "uv", type: InputFormat.DVec2},
@@ -128,10 +128,10 @@ class ImGuiDrawableBuffers {
 
 	var noTexture:Texture;
 	final managedTextures:Map<Int, ManagedImGuiTexture> = [];
-	#if hlimgui_heaps_old_buffer_alloc
+	#if heaps_imgui_heaps_old_buffer_alloc
 	final legacyVertexData:Array<hxd.FloatBuffer> = [];
 	#end
-	#if hlimgui_render_benchmark
+	#if heaps_imgui_render_benchmark
 	var benchmarkSamples = 0;
 	#end
 
@@ -140,7 +140,7 @@ class ImGuiDrawableBuffers {
 	private var initialized:Bool = false;
 	private var ownerCount:Int = 0;
 	private var compatibilityOwner:Bool = false;
-	#if hlimgui_cursor
+	#if heaps_imgui_cursor
 	private var previousCursorHandler:hxd.Cursor -> Void;
 	#end
 
@@ -149,7 +149,7 @@ class ImGuiDrawableBuffers {
 	**/
 	public var font_texture:Texture;
 
-	#if hlimgui_cursor
+	#if heaps_imgui_cursor
 	/**
 		Gets or sets cursor map.
 	**/
@@ -217,7 +217,7 @@ class ImGuiDrawableBuffers {
 		io.BackendFlags |= ImGuiBackendFlags.RendererHasTextures;
 
 		noTexture = Tile.fromColor(0xffffff).getTexture();
-		#if hlimgui_cursor
+		#if heaps_imgui_cursor
 		previousCursorHandler = hxd.System.setCursor;
 		hxd.System.setCursor = updateCursor;
 		#end
@@ -246,7 +246,7 @@ class ImGuiDrawableBuffers {
 			vertex_buffer.dispose();
 		}
 		vertex_buffers = [];
-		#if hlimgui_heaps_old_buffer_alloc
+		#if heaps_imgui_heaps_old_buffer_alloc
 		legacyVertexData.resize(0);
 		#end
 		for (managed in managedTextures)
@@ -269,10 +269,10 @@ class ImGuiDrawableBuffers {
 		framebufferHeight = 0;
 		framebufferScaleX = 1;
 		framebufferScaleY = 1;
-		#if hlimgui_render_benchmark
+		#if heaps_imgui_render_benchmark
 		benchmarkSamples = 0;
 		#end
-		#if hlimgui_cursor
+		#if heaps_imgui_cursor
 		cursor_map.clear();
 		if (Reflect.compareMethods(hxd.System.setCursor, updateCursor))
 			hxd.System.setCursor = previousCursorHandler;
@@ -295,7 +295,7 @@ class ImGuiDrawableBuffers {
 					managedTextures[update.uniqueId] = {texture: texture, pixels: pixels};
 					if (font_texture == null)
 						font_texture = texture;
-					#if hlimgui_cursor
+					#if heaps_imgui_cursor
 					buildCursors(pixels);
 					#end
 					update.textureData.setTexture(texture);
@@ -338,7 +338,7 @@ class ImGuiDrawableBuffers {
 		return new hxd.Pixels(update.width, update.height, rgba, hxd.PixelFormat.RGBA);
 	}
 
-	#if hlimgui_cursor
+	#if heaps_imgui_cursor
 	private function buildCursors(pixels:hxd.Pixels) {
 		final cursorPixels:hxd.Pixels.PixelsARGB = pixels.clone();
 		final fonts = ImGui.getFontAtlas();
@@ -402,7 +402,7 @@ class ImGuiDrawableBuffers {
 	#end
 
 	private function renderDrawList(renderList:RenderList) {
-		#if hlimgui_render_benchmark
+		#if heaps_imgui_render_benchmark
 		final rendererStart = haxe.Timer.stamp();
 		#end
 		bufferCount = 0;
@@ -418,7 +418,7 @@ class ImGuiDrawableBuffers {
 		framebufferHeight = renderList.framebufferHeight;
 		framebufferScaleX = renderList.framebufferScaleX;
 		framebufferScaleY = renderList.framebufferScaleY;
-		#if hlimgui_heaps_old_buffer_alloc
+		#if heaps_imgui_heaps_old_buffer_alloc
 		lastVertexStride = 8 * 4;
 		lastVertexBytes = renderList.vertexCount * 8 * 4;
 		#else
@@ -433,7 +433,7 @@ class ImGuiDrawableBuffers {
 			final indexCount = data.indexCount;
 			if (data.vertexBufferSize != vertexCount * data.vertexStride)
 				throw "Invalid ImGui vertex buffer size";
-			#if !hlimgui_heaps_old_buffer_alloc
+			#if !heaps_imgui_heaps_old_buffer_alloc
 			if (data.vertexStride != vertexFormat.strideBytes
 				|| data.positionOffset != vertexFormat.calculateInputOffset("position")
 				|| data.uvOffset != vertexFormat.calculateInputOffset("uv")
@@ -463,11 +463,11 @@ class ImGuiDrawableBuffers {
 			bufferCount++;
 		}
 
-		#if hlimgui_render_benchmark
+		#if heaps_imgui_render_benchmark
 		lastRendererTimeUs = Std.int((haxe.Timer.stamp() - rendererStart) * 1000000);
 		if (++benchmarkSamples % 120 == 0) {
 			final bytesPerVertex = lastVertexCount == 0 ? 0 : lastVertexBytes / lastVertexCount;
-			Sys.println('hlimgui renderer: vertices=$lastVertexCount, prepare=${lastPrepareTimeUs}us, renderer=${lastRendererTimeUs}us, vertexUpload=$lastVertexBytes bytes, stride=$bytesPerVertex, indexBytes=$lastIndexBytes, indexCopied=$lastIndexCopyBytes, rebased=$lastRebasedIndexCount, nonzeroVtxOffset=$lastNonzeroVtxOffsetCount');
+			Sys.println('heaps-imgui renderer: vertices=$lastVertexCount, prepare=${lastPrepareTimeUs}us, renderer=${lastRendererTimeUs}us, vertexUpload=$lastVertexBytes bytes, stride=$bytesPerVertex, indexBytes=$lastIndexBytes, indexCopied=$lastIndexCopyBytes, rebased=$lastRebasedIndexCount, nonzeroVtxOffset=$lastNonzeroVtxOffsetCount');
 		}
 		#else
 		lastRendererTimeUs = 0;
@@ -479,7 +479,7 @@ class ImGuiDrawableBuffers {
 	}
 
 	function createVertexBuffer(capacity:Int):h3d.Buffer {
-		#if hlimgui_heaps_old_buffer_alloc
+		#if heaps_imgui_heaps_old_buffer_alloc
 		return new h3d.Buffer(capacity, 8, [RawFormat, Dynamic]);
 		#else
 		return new h3d.Buffer(capacity, vertexFormat, [Dynamic]);
@@ -487,7 +487,7 @@ class ImGuiDrawableBuffers {
 	}
 
 	function uploadVertices(index:Int, data:RenderData):Void {
-		#if hlimgui_heaps_old_buffer_alloc
+		#if heaps_imgui_heaps_old_buffer_alloc
 		var vertices = legacyVertexData[index];
 		if (vertices == null)
 			vertices = legacyVertexData[index] = new hxd.FloatBuffer();
@@ -519,7 +519,7 @@ class ImGuiDrawableBuffers {
 		commandData.obj = obj;
 		for (i in 0...bufferCount) {
 			var data = commands[i];
-			#if !hlimgui_heaps_old_buffer_alloc
+			#if !heaps_imgui_heaps_old_buffer_alloc
 			@:privateAccess {
 				final offsetX = data.displayPosX * obj.matA + data.displayPosY * obj.matC;
 				final offsetY = data.displayPosX * obj.matB + data.displayPosY * obj.matD;
@@ -617,7 +617,7 @@ class ImGuiDrawable extends h2d.Drawable {
 	var modifier_keys_down:Map<Int, Bool> = [];
 	#end
 	var wheel_inverted:Bool;
-	#if !hlimgui_heaps_old_buffer_alloc
+	#if !heaps_imgui_heaps_old_buffer_alloc
 	final positionShader:ImGuiPositionShader;
 	#end
 	#if !multidriver
@@ -632,7 +632,7 @@ class ImGuiDrawable extends h2d.Drawable {
 	**/
 	public function new(?parent, ?addDefaultFont = true) {
 		super(parent);
-		#if !hlimgui_heaps_old_buffer_alloc
+		#if !heaps_imgui_heaps_old_buffer_alloc
 		positionShader = addShader(new ImGuiPositionShader());
 		positionShader.enabled = false;
 		#end
@@ -754,7 +754,7 @@ class ImGuiDrawable extends h2d.Drawable {
 
 			this.scene_size = {width: scene.width, height: scene.height};
 		}
-		#if hlimgui_cursor
+		#if heaps_imgui_cursor
 		// Somewhat hacky solution to enforce a cursor: But that's what we can do.
 		var cursor = ImGuiDrawableBuffers.instance.cursor_map[ImGui.getMouseCursor()];
 		if (cursor != null)

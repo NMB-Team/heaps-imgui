@@ -1,6 +1,6 @@
 import hl.Abstract;
 
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 private class Native {
 	public static function createContext():Abstract<"imcontext"> {
 		return null;
@@ -15,6 +15,6 @@ class LinuxSmoke {
 		if (context == null)
 			throw "Failed to create an ImGui context";
 		Native.destroyContext(context);
-		Sys.println("hlimgui loaded successfully");
+		Sys.println("heaps-imgui loaded successfully");
 	}
 }

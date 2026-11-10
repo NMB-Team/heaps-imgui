@@ -4504,7 +4504,7 @@ abstract ImVec4(ImVec4S) from ImVec4S to ImVec4S {
 
 @:keep
 @:build(imgui._ImGuiInternalMacro.buildFlatStruct())
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 @:struct class ImGuiStyle {
 	var FontSizeBase:Single;
 	var FontScaleMain:Single;
@@ -4663,7 +4663,7 @@ enum abstract ImGuiKeyChord(Int) from Int to Int {
 
 @:keep
 @:build(imgui._ImGuiInternalMacro.buildFlatStruct())
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 @:struct class ImGuiIO {
 	var ConfigFlags:ImGuiConfigFlags;
 	var BackendFlags:ImGuiBackendFlags;
@@ -4695,7 +4695,7 @@ enum abstract ImGuiKeyChord(Int) from Int to Int {
 	var ConfigDockingAlwaysTabBar:Bool;
 	var ConfigDockingTransparentPayload:Bool;
 
-	// Viewport options (when ImGuiConfigFlags_ViewportsEnable is set; which it's not in hlimgui)
+	// Viewport options (when ImGuiConfigFlags_ViewportsEnable is set; which it's not in heaps-imgui)
 	var ConfigViewportsNoAutoMerge:Bool;
 	var ConfigViewportsNoTaskBarIcon:Bool;
 	var ConfigViewportsNoDecoration:Bool;
@@ -4942,7 +4942,7 @@ enum abstract ImGuiKeyChord(Int) from Int to Int {
 
 @:keep
 @:build(imgui._ImGuiInternalMacro.buildFlatStruct())
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 @:struct class ImGuiPlatformIO {
 	// MSVC throws errors on empty structures
 	private var __placeholder:Int;
@@ -5157,7 +5157,7 @@ typedef ImGuiInputTextCallbackDataFunc = (ImGuiInputTextCallbackData) -> Int;
 	Editable text state passed to an input-text callback.
 **/
 @:keep
-@:struct @:hlNative("hlimgui")
+@:struct @:hlNative("imgui")
 class ImGuiInputTextCallbackData {
 	/**
 		One ImGuiInputTextFlags_Callback* // Read-only.
@@ -5341,7 +5341,7 @@ typedef ImGuiDockNode = imgui.types.ImGuiDockNode;
 
 @:keep
 @:build(imgui._ImGuiInternalMacro.buildFlatStruct())
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 @:struct class ImGuiVec2Struct {
 	/**
 		Horizontal component.
@@ -5356,7 +5356,7 @@ typedef ImGuiDockNode = imgui.types.ImGuiDockNode;
 
 @:keep
 @:build(imgui._ImGuiInternalMacro.buildFlatStruct())
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 @:struct class ImGuiViewport {
 	/**
 		Widget ID // Read-only.
@@ -5446,7 +5446,7 @@ typedef ImGuiDockNode = imgui.types.ImGuiDockNode;
 
 @:keep
 @:build(imgui._ImGuiInternalMacro.buildFlatStruct())
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 @:struct class ImGuiWindowClass {
 	/**
 		User data. 0 = Default class (unclassed). Windows of different classes cannot be docked with each others.
@@ -5508,7 +5508,7 @@ typedef ImGuiDockNode = imgui.types.ImGuiDockNode;
 /**
 	One selection update requested by a multi-select widget.
 **/
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 abstract ImGuiSelectionRequest(ImGuiSelectionRequestPtr) from ImGuiSelectionRequestPtr to ImGuiSelectionRequestPtr {
 	/**
 		Kind of selection change requested.
@@ -5571,7 +5571,7 @@ abstract ImGuiSelectionRequest(ImGuiSelectionRequestPtr) from ImGuiSelectionRequ
 /**
 	Selection requests and state exchanged with a multi-select scope.
 **/
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 abstract ImGuiMultiSelectIO(ImGuiMultiSelectIOPtr) from ImGuiMultiSelectIOPtr to ImGuiMultiSelectIOPtr {
 	/**
 		The requests count.
@@ -5660,7 +5660,7 @@ abstract ImGuiMultiSelectIO(ImGuiMultiSelectIOPtr) from ImGuiMultiSelectIOPtr to
 /**
 	Sort direction and priority for one table column.
 **/
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 abstract ImGuiTableColumnSortSpecs(ImGuiTableColumnSortSpecsPtr) from ImGuiTableColumnSortSpecsPtr to ImGuiTableColumnSortSpecsPtr {
 	/**
 		Gets or sets column user id.
@@ -5710,7 +5710,7 @@ abstract ImGuiTableColumnSortSpecs(ImGuiTableColumnSortSpecsPtr) from ImGuiTable
 /**
 	Valid until the next BeginTable() call or the end of the current frame.
 **/
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 abstract ImGuiTableSortSpecs(ImGuiTableSortSpecsPtr) from ImGuiTableSortSpecsPtr to ImGuiTableSortSpecsPtr {
 	/**
 		The specs count.
@@ -5760,7 +5760,7 @@ abstract ImDrawListSharedData(ImDrawListSharedDataPtr) from ImDrawListSharedData
 /**
 	Key-value state storage associated with a Dear ImGui window.
 **/
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 abstract ImStateStorage(ImStateStoragePtr) from ImStateStoragePtr to ImStateStoragePtr {
 	/**
 		Creates a new `ImStateStorage` instance.
@@ -5827,7 +5827,7 @@ abstract ImStateStorage(ImStateStoragePtr) from ImStateStoragePtr to ImStateStor
 /**
 	Typed data currently carried by a drag-and-drop operation.
 **/
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 abstract ImDragDropPayload(ImDragDropPayloadPtr) from ImDragDropPayloadPtr to ImDragDropPayloadPtr {
 	/**
 		Creates a new `ImDragDropPayload` instance.
@@ -5937,7 +5937,7 @@ abstract ImDragDropPayload(ImDragDropPayloadPtr) from ImDragDropPayloadPtr to Im
 /**
 	Dear ImGui end-user API exposed to Haxe.
 **/
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 class ImGui {
 	/**
 		Largest finite 32-bit floating-point value, useful as an unbounded API limit.
@@ -5978,7 +5978,7 @@ class ImGui {
 		notifications.clear();
 	}
 
-	@:hlNative("hlimgui", "destroy_context")
+	@:hlNative("imgui", "destroy_context")
 	static function destroy_context(ctx:ImContextPtr) {}
 
 	/**
@@ -6036,7 +6036,7 @@ class ImGui {
 		new_frame();
 	}
 
-	@:hlNative("hlimgui", "new_frame")
+	@:hlNative("imgui", "new_frame")
 	static function new_frame() {}
 
 	/**
@@ -6052,7 +6052,7 @@ class ImGui {
 		render_frame();
 	}
 
-	@:hlNative("hlimgui", "render")
+	@:hlNative("imgui", "render")
 	static function render_frame() {}
 
 	// Demo, Debug, Information
@@ -8956,7 +8956,7 @@ class ImGui {
 		_init(ImVec2.get(), ImVec4.get(), new RenderList(), new RenderData(), new RenderCommand(), new RenderTextureList(), new RenderTextureData());
 	}
 
-	@:hlNative("hlimgui", "initialize")
+	@:hlNative("imgui", "initialize")
 	static function _init(vec2:ImVec2, vec4:ImVec4, renderlist:RenderList, renderdata:RenderData, rendercommand:RenderCommand, texturelist:RenderTextureList, texturedata:RenderTextureData) {};
 
 	/**

@@ -1,6 +1,6 @@
 package imgui;
 
-#if hlimgui
+#if heaps_imgui
 import imgui.ImGui.ImVec2;
 import imgui.ImGui.ImVec2S;
 import imgui.ImGui.ImVec4;
@@ -260,7 +260,7 @@ enum abstract StyleVar(Int) from Int to Int {
 **/
 @:keep
 @:build(imgui._ImGuiInternalMacro.buildFlatStruct())
-@:hlNative("hlimgui", "nodeeditor_")
+@:hlNative("imgui", "nodeeditor_")
 @:struct
 class Style {
 	@:flatten var NodePadding:ImVec4S;
@@ -402,7 +402,7 @@ enum abstract FlowDirection(Int) from Int to Int {
 /**
 	Immediate-mode node editor API.
 **/
-@:hlNative("hlimgui", "nodeeditor_")
+@:hlNative("imgui", "nodeeditor_")
 class NodeEditor {
 	// Context
 

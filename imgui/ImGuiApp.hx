@@ -16,7 +16,7 @@ import sdl.Sdl as SdlPlatform;
 
 	Usage example:
 	```haxe
-	class MyGameApp extends #if hlimgui imgui.ImGuiApp #else hxd.App #end {
+	class MyGameApp extends #if heaps_imgui imgui.ImGuiApp #else hxd.App #end {
 
 	// Use your regular App setup.
 

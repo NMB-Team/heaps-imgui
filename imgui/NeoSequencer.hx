@@ -1,6 +1,6 @@
 package imgui;
 
-#if hlimgui
+#if heaps_imgui
 import imgui.ImGui.ImVec2;
 import imgui.ImGui.ImVec2S;
 import imgui.ImGui.ImVec4;
@@ -205,7 +205,7 @@ enum abstract NeoStyleColor(Int) from Int to Int {
 **/
 @:keep
 @:build(imgui._ImGuiInternalMacro.buildFlatStruct())
-@:hlNative("hlimgui", "ns_")
+@:hlNative("imgui", "ns_")
 @:struct
 class NeoStyle {
 	/**
@@ -290,7 +290,7 @@ class NeoStyle {
 /**
 	Immediate-mode timeline and keyframe sequencer API.
 **/
-@:hlNative("hlimgui", "ns_")
+@:hlNative("imgui", "ns_")
 class NeoSequencer {
 	/**
 		Access the Style structure (colors, sizes). Always use PushStyleColor(), PushStyleVar() to modify style mid-frame!

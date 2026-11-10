@@ -1,6 +1,6 @@
 package imgui;
 
-#if !hlimgui_disable_macro_helpers
+#if !heaps_imgui_disable_macro_helpers
 #if macro
 import haxe.macro.Expr;
 

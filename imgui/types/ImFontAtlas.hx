@@ -91,7 +91,7 @@ import imgui.types.Pointers;
 		return this;
 	}
 
-	@:hlNative("hlimgui", "imfontconfig_init")
+	@:hlNative("imgui", "imfontconfig_init")
 	static function init(cfg:ImFontConfig) {}
 }
 
@@ -223,7 +223,7 @@ class ImCursorData {
 /**
 	Font and texture atlas used by the current Dear ImGui context.
 **/
-@:hlNative("hlimgui", "imfontatlas_")
+@:hlNative("imgui", "imfontatlas_")
 abstract ImFontAtlas(ImFontAtlasPtr) from ImFontAtlasPtr to ImFontAtlasPtr {
 	inline function new(ptr:ImFontAtlasPtr) {
 		this = ptr;

@@ -38,7 +38,7 @@ enum abstract ImTextureStatus(Int) from Int to Int {
 /**
 	Mutable renderer texture state supplied by Dear ImGui.
 **/
-@:hlNative("hlimgui", "imtexturedata_")
+@:hlNative("imgui", "imtexturedata_")
 abstract ImTextureData(ImTextureDataPtr) from ImTextureDataPtr to ImTextureDataPtr {
 	/**
 		Sets texture.

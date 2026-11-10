@@ -3,7 +3,7 @@
 
 // #define _TVIEWPORT _ABSTRACT(imguiviewport)
 
-struct HLImGuiPlatformClosures {
+struct HeapsImGuiPlatformClosures {
 	vclosure* Platform_CreateWindow;
 	vclosure* Platform_DestroyWindow;
 	vclosure* Platform_ShowWindow;
@@ -20,7 +20,7 @@ struct HLImGuiPlatformClosures {
 	vclosure* Renderer_SwapBuffers;
 };
 
-HLImGuiPlatformClosures HlClosures;
+HeapsImGuiPlatformClosures HlClosures;
 extern ImGuiContext* GImGui;
 
 void HlPlatform_CreateWindow(ImGuiViewport* vp) {

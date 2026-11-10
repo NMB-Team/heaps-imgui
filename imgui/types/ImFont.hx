@@ -9,7 +9,7 @@ import imgui.types.Pointers;
 	Do not use this handle after the font has been removed from the atlas
 	or after the owning ImGui context has been destroyed.
 **/
-@:hlNative("hlimgui", "imfont_")
+@:hlNative("imgui", "imfont_")
 abstract ImFont(ImFontPtr) from ImFontPtr to ImFontPtr {
 	/**
 		Creates a new `ImFont` instance.
@@ -42,7 +42,7 @@ abstract ImFont(ImFontPtr) from ImFontPtr to ImFontPtr {
 		return @:privateAccess String.fromUTF8(_getDebugName());
 	}
 
-	@:hlNative("hlimgui", "imfont_get_debug_name")
+	@:hlNative("imgui", "imfont_get_debug_name")
 	private function _getDebugName():hl.Bytes {
 		return null;
 	}

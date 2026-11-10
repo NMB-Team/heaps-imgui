@@ -1,6 +1,6 @@
 package imgui;
 
-#if hlimgui
+#if heaps_imgui
 import imgui.ImGui.ImVec2;
 import imgui.ImGui.ImVec2S;
 import imgui.ImGui.ImVec4;
@@ -161,7 +161,7 @@ typedef MarkdownTooltipCallback = (MarkdownTooltipCallbackData) -> Void;
 **/
 @:keep
 @:build(imgui._ImGuiInternalMacro.buildFlatStruct())
-@:hlNative("hlimgui", "markdown_")
+@:hlNative("imgui", "markdown_")
 @:struct
 class MarkdownConfig {
 	/**
@@ -237,7 +237,7 @@ class MarkdownConfig {
 /**
 	Renders Markdown content with Dear ImGui.
 **/
-@:hlNative("hlimgui", "markdown_")
+@:hlNative("imgui", "markdown_")
 class Markdown {
 	// Context
 

@@ -21,7 +21,7 @@ typedef FieldRefPtr<T> = hl.Ref<T>;
 	Native functions used to construct typed field references.
 **/
 @:noCompletion
-@:hlNative("hlimgui")
+@:hlNative("imgui")
 class FieldRefNative {
 	public static function fieldref_i8_hash(data:Dynamic, fieldHash:Int):hl.Ref<hl.UI8> {
 		return null;

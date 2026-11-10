@@ -1,6 +1,6 @@
 #pragma once
 
-#define HL_NAME(n) hlimgui_##n
+#define HL_NAME(n) imgui_##n
 #define _IMVEC2 _OBJ(_F32 _F32)
 #define _IMVEC4 _OBJ(_F32 _F32 _F32 _F32)
 #define _IMTEXID _DYN

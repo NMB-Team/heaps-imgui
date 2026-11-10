@@ -148,7 +148,7 @@ void renderDrawLists(ImDrawData* draw_data) {
 		return;
 	updateTextures(draw_data);
 
-#ifdef HLIMGUI_RENDER_BENCHMARK
+#ifdef HEAPS_IMGUI_RENDER_BENCHMARK
 	const auto prepare_start = std::chrono::steady_clock::now();
 #endif
 
@@ -270,7 +270,7 @@ void renderDrawLists(ImDrawData* draw_data) {
 		}
 	}
 
-#ifdef HLIMGUI_RENDER_BENCHMARK
+#ifdef HEAPS_IMGUI_RENDER_BENCHMARK
 	render_list->prepare_time_us = int(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - prepare_start).count());
 #else
 	render_list->prepare_time_us = 0;

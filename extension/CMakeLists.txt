@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(TARGET_NAME hlimgui)
+set(TARGET_NAME heaps-imgui)
 set(TARGET_EXT .hdll)
 
 project(${TARGET_NAME})
@@ -66,7 +66,7 @@ message(STATUS "Using HashLink library: ${HASHLINK_LIBRARY}")
 option(NODE_EDITOR "Include imgui-node-editor (required to use NodeEditor.hx)" ON)
 option(NEO_SEQUENCER "Include imgui-neo_sequencer (required to use NeoSequencer.hx). DEPRECATED." OFF)
 option(MARKDOWN "Include markdown support (required to use Imgui.TextMarkdown)" ON)
-option(HLIMGUI_RENDER_BENCHMARK "Measure native ImGui render-data preparation time" OFF)
+option(HEAPS_IMGUI_RENDER_BENCHMARK "Measure native ImGui render-data preparation time" OFF)
 
 if( NODE_EDITOR )
 	set(IMGUI_NODE_EDITOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/imgui-node-editor")
@@ -136,8 +136,8 @@ endif()
 
 add_library(${TARGET_NAME}${TARGET_EXT} SHARED ${SOURCES} ${IMGUI_SOURCES})
 
-if(HLIMGUI_RENDER_BENCHMARK)
-	target_compile_definitions(${TARGET_NAME}${TARGET_EXT} PRIVATE HLIMGUI_RENDER_BENCHMARK)
+if(HEAPS_IMGUI_RENDER_BENCHMARK)
+	target_compile_definitions(${TARGET_NAME}${TARGET_EXT} PRIVATE HEAPS_IMGUI_RENDER_BENCHMARK)
 endif()
 
 add_compile_definitions(IMGUI_USER_CONFIG="../../imgui_config.h")
@@ -145,7 +145,8 @@ add_compile_definitions(IMGUI_USER_CONFIG="../../imgui_config.h")
 set_target_properties(${TARGET_NAME}${TARGET_EXT}
 	PROPERTIES
 	PREFIX ""
-	OUTPUT_NAME ${TARGET_NAME}
+	OUTPUT_NAME imgui
+	ARCHIVE_OUTPUT_NAME ${TARGET_NAME}
 	SUFFIX ${TARGET_EXT}
 )
 

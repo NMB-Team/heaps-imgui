@@ -44,7 +44,7 @@ package imgui.types;
 	- The clipper also handles various subtleties related to keyboard/gamepad navigation, wrapping etc.
 **/
 @:forward
-@:hlNative("hlimgui", "imlistclipper_")
+@:hlNative("imgui", "imlistclipper_")
 abstract ImGuiListClipper(ImGuiListClipperStruct) from ImGuiListClipperStruct to ImGuiListClipperStruct {
 	static function init():ImGuiListClipperStruct {
 		return null;
@@ -64,7 +64,7 @@ abstract ImGuiListClipper(ImGuiListClipperStruct) from ImGuiListClipperStruct to
 	public inline extern function begin(itemCount:Int, itemsHeight:Single = -1.0)
 		_begin(itemCount, itemsHeight);
 
-	@:hlNative("hlimgui", "imlistclipper_begin") function _begin(itemCount:Int, itemsHeight:Single) {}
+	@:hlNative("imgui", "imlistclipper_begin") function _begin(itemCount:Int, itemsHeight:Single) {}
 
 	/**
 		Automatically called on the last call of Step() that returns false.

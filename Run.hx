@@ -13,7 +13,7 @@ typedef Command = {
 }
 
 class Run {
-	static inline final HLIMGUI_HDLL = "hlimgui.hdll";
+	static inline final IMGUI_HDLL = "imgui.hdll";
 
 	static var libPath:String = Sys.getCwd();
 	static var callPath:String;
@@ -33,7 +33,7 @@ class Run {
 			args: "[flags] [hdll_path]",
 			help: "Build the extension hdll file.
     Flags:
-      \u001B[93m-u  | --update\u001B[0m      Update the git submodules (equivalent to running `haxelib run hlimgui update` beforehand)
+      \u001B[93m-u  | --update\u001B[0m      Update the git submodules (equivalent to running `haxelib run heaps-imgui update` beforehand)
       \u001B[93m-r  | --release\u001B[0m     Build with Release configuration, defaults to Debug.
       \u001B[93m-ni | --no-install\u001B[0m  Do not run the `install` command after build finished.
     Args:
@@ -70,7 +70,7 @@ class Run {
                           looking for it in `HASHLINK`, `HASHLINK_BIN`, `HASHLINK_PATH`,
                           `HASHLINKPATH`, `PATH`, and common install locations.",
 			exec: (args, _) -> {
-				final hdllPath = Path.join([libPath, HLIMGUI_HDLL]);
+				final hdllPath = Path.join([libPath, IMGUI_HDLL]);
 				if (!FileSystem.exists(hdllPath)) {
 					Sys.println("Extension is not built or failed to produce the .hdll file! Use `build` command.");
 					return;
@@ -88,7 +88,7 @@ class Run {
 				if (outputPath != null) {
 					if (!FileSystem.isDirectory(outputPath))
 						FileSystem.createDirectory(outputPath);
-					File.copy(hdllPath, Path.join([outputPath, HLIMGUI_HDLL]));
+					File.copy(hdllPath, Path.join([outputPath, IMGUI_HDLL]));
 					Sys.println("Copying file to " + outputPath);
 				}
 			}
@@ -203,12 +203,12 @@ class Run {
 			if (cmd == null) {
 				Sys.println("Help not found for command \"" + args[0] + "\", no such command!");
 			} else {
-				Sys.println('Usage: haxelib run hlimgui \u001B[94m${cmd.name} \u001B[93m${cmd.args}\u001B[0m');
+				Sys.println('Usage: haxelib run heaps-imgui \u001B[94m${cmd.name} \u001B[93m${cmd.args}\u001B[0m');
 				Sys.println(("  \u001B[94m" + cmd.name + "\u001B[93m " + (cmd.args ?? "")).rtrim() + "\u001B[0m - " + cmd.help);
 			}
 			return;
 		}
-		Sys.println("Usage: haxelib run hlimgui \u001B[94m<command> \u001B[93m<args>\u001B[0m");
+		Sys.println("Usage: haxelib run heaps-imgui \u001B[94m<command> \u001B[93m<args>\u001B[0m");
 		Sys.println("Available commands:");
 		for (cmd in linearCommands) {
 			Sys.println(("  \u001B[94m" + cmd.name + "\u001B[93m " + (cmd.args ?? "")).rtrim() + "\u001B[0m - " + cmd.help);

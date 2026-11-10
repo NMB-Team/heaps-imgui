@@ -356,7 +356,7 @@ class NotificationCenter {
 			var closeClicked = false;
 			var actionClicked = false;
 			final flags = ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoDocking;
-			if (ImGui.begin('##hlimgui-notification-${notification.id}', null, flags)) {
+			if (ImGui.begin('##heaps-imgui-notification-${notification.id}', null, flags)) {
 				final title = notification.title == null ? defaultTitle(notification.kind) : notification.title;
 				if (title.length > 0) {
 					ImGui.textColored(accent, title);
