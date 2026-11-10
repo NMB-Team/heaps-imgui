@@ -109,7 +109,7 @@ Format strings in Haxe before passing them to widgets. For example, use `ImGui.t
 | Haxe cannot find `heaps-imgui` | Run `haxelib path heaps-imgui` and confirm it points to the intended checkout. |
 | HashLink cannot load `imgui.hdll` | Check the app’s working directory, the native library search path, and whether the HDLL matches the runtime and architecture. |
 | HashLink reports a missing native function | Use the Haxe bindings and `imgui.hdll` from the same revision. Check whether the function needs an add-on enabled in CMake. |
-| A build still refers to `hlimgui` | Update the dependency to `-lib heaps-imgui` and replace explicit `-D hlimgui` flags with `-D heaps-imgui`. The old define is accepted with a deprecation warning when the library is loaded. In Haxe code, use `#if heaps_imgui`. |
+| A build still refers to `hlimgui` | Update the dependency to `-lib heaps-imgui` and replace explicit `-D hlimgui` flags with `-D heaps_imgui`. The old define is accepted with a deprecation warning when the library is loaded. In Haxe code, use `#if heaps_imgui`. |
 
 ## Further reading
 

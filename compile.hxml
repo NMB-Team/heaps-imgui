@@ -3,5 +3,5 @@
 -lib hlsdl
 -hl imgui.hl
 -main Main
--D heaps-imgui
+-D heaps_imgui
 extraParams.hxml

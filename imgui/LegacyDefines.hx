@@ -11,9 +11,9 @@ class LegacyDefines {
 			return;
 
 		if (!Context.defined("heaps_imgui"))
-			Compiler.define("heaps-imgui", legacyValue);
+			Compiler.define("heaps_imgui", legacyValue);
 
-		Context.warning("The hlimgui define is deprecated. Use -D heaps-imgui instead.", Context.currentPos());
+		Context.warning("The hlimgui define is deprecated. Use -D heaps_imgui instead.", Context.currentPos());
 	}
 }
 #end
