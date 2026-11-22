@@ -4,7 +4,8 @@ package imgui;
 import imgui.ImGui;
 
 #if limen
-import limen.platform.Platform as SdlPlatform;
+import limen.Platform as SdlPlatform;
+import limen.SDLHint;
 #elseif hlsdl
 import sdl.Sdl as SdlPlatform;
 #end
@@ -92,7 +93,11 @@ class ImGuiApp extends hxd.App {
 		#if (hlsdl || limen)
 		// This hint allows a focus click to also send events. Without this, you have to click a window
 		// once before you can interact with it, which feels really bad.
+		#if limen
+		SdlPlatform.setHint(SDLHint.SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
+		#else
 		SdlPlatform.setHint("SDL_MOUSE_FOCUS_CLICKTHROUGH", "1");
+		#end
 		io.ConfigDockingTransparentPayload = true;
 
 		for (d in SdlPlatform.getDisplays()) {
@@ -134,16 +139,16 @@ class ImGuiApp extends hxd.App {
 				d3dDriver.reset();
 				d3dDriver.init(e.onCreate, !e.hardware);
 				#elseif (hlsdl || limen)
+				#if hlsdl
 				var mainWindow = hxd.Window.inst;
+				#end
 				var w = new hxd.Window("ImGui Viewport", 100, 100, {fixed: false, hidden: true});
 				#if hlsdl
 				w.displayMode = hxd.Window.DisplayMode.Borderless;
-				#elseif limen
-				w.displayMode = hxd.Window.DisplayMode.WindowedFullscreen; // use fixed fullscreen
-				#end
-				var e = h3d.Engine.getCurrent();
-				// Disable vsync on these windows; else we end up waiting for vblank for every individual window.
 				w.vsync = false;
+				#else
+				w.presentMode = Immediate;
+				#end
 
 				#if hlsdl
 				@:privateAccess

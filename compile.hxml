@@ -1,6 +1,7 @@
 -cp src
 -lib heaps
--lib hlsdl
+-lib limen
+-D hl-ver=1.15.0
 -hl imgui.hl
 -main Main
 -D heaps-imgui

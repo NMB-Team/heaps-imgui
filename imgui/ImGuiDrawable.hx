@@ -23,7 +23,7 @@ import hxd.Key in KeyCode;
 #end
 
 #if limen
-import limen.platform.Platform as SdlPlatform;
+import limen.Platform as SdlPlatform;
 #elseif hlsdl
 import sdl.Sdl as SdlPlatform;
 #end

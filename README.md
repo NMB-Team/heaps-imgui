@@ -54,7 +54,9 @@ class Main extends ImGuiApp {
 
 Call `ImGui.end()` after every `ImGui.begin()`, even when `begin()` returns `false`. Use `ImGui.showDemoWindow()` inside `update()` to explore widgets and settings.
 
-To run this repository’s [sample](src/Main.hx), install Heaps and hlsdl, place `imgui.hdll` in the checkout root, and run:
+To run this repository’s [sample](src/Main.hx), register Heaps-NMB and Limen
+with Haxelib, then place `imgui.hdll`, `limen.hdll`, and `opengl.limen` in
+your HashLink native library search path.
 
 ```sh
 haxe compile.hxml
